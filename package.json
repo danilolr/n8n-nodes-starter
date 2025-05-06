@@ -1,5 +1,5 @@
 {
-  "name": "n8n-nodes-<...>",
+  "name": "n8n-nodes-atendimento",
   "version": "0.1.0",
   "description": "",
   "keywords": [
@@ -8,12 +8,12 @@
   "license": "MIT",
   "homepage": "",
   "author": {
-    "name": "",
-    "email": ""
+    "name": "Danilo Luiz Rheinheimer",
+    "email": "danilolr@gmail.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/<...>/n8n-nodes-<...>.git"
+    "url": "https://github.com/danilolr/n8n-nodes-starter.git"
   },
   "engines": {
     "node": ">=18.10",
@@ -41,6 +41,8 @@
     ],
     "nodes": [
       "dist/nodes/ExampleNode/ExampleNode.node.js",
+      "dist/nodes/AtendimentoNode/AtendimentoNode.node.js",
+      "dist/nodes/AtendimentoChatbotNode/AtendimentoChatbotNode.node.js",
       "dist/nodes/HttpBin/HttpBin.node.js"
     ]
   },
