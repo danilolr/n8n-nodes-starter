@@ -4,7 +4,7 @@ import type {
 	INodeType,
 	INodeTypeDescription,
 } from 'n8n-workflow';
-import { NodeConnectionType, NodeOperationError } from 'n8n-workflow'; 
+import { NodeConnectionType } from 'n8n-workflow';
 
 export class AtendimentoChatbotNode implements INodeType {
 	description: INodeTypeDescription = {
@@ -16,8 +16,17 @@ export class AtendimentoChatbotNode implements INodeType {
 		defaults: {
 			name: 'Atendimento Chatbot Node',
 		},
-		inputs: [NodeConnectionType.Main],
-		outputs: [NodeConnectionType.Main],		
+		inputs: [
+			{
+				type: NodeConnectionType.Main,
+				displayName: "Entrypoint",
+			},
+			{
+				type: NodeConnectionType.Main,
+				displayName: "Start state",
+			}
+		],
+		outputs: [NodeConnectionType.Main],
 		properties: [
 			{
 				displayName: 'Name',
@@ -31,51 +40,16 @@ export class AtendimentoChatbotNode implements INodeType {
 	};
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
-		const items = this.getInputData();
+		// This node will now output its configured name, ignoring any input items.
+		// This makes it suitable as a configuration provider for the AtendimentoNode's 'chatbots' input.
+		const chatbotName = this.getNodeParameter('chatbotName', 0, '') as string;
 
-		let item: INodeExecutionData;
-		let chatbotName: string;
+		const returnItem: INodeExecutionData = {
+			json: {
+				chatbotName: chatbotName,
+			},
+		};
 
-		for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
-			// const chatbotName = this.getNodeParameter('name', 0, '') as string;
-
-			// // Cria o objeto de dados de saída.
-			// // É crucial que a propriedade 'name' esteja presente no objeto 'json',
-			// // pois o nó 'atendimento' dependerá dela.
-			// const returnItem: INodeExecutionData = {
-			// 	json: {
-			// 		name: chatbotName,
-			// 	},
-			// };
-	
-			// // Retorna os dados formatados corretamente usando o helper do n8n.
-			// // O array externo representa a saída 'main', e o interno contém o único item de dados.
-			// return [this.helpers.returnJsonArray([returnItem])];			
-			try {
-				chatbotName = this.getNodeParameter('chatbotName', itemIndex, '') as string;
-				item = items[itemIndex];
-
-				item.json.chatbotName = chatbotName;
-
-
-			} catch (error) {
-				if (this.continueOnFail()) {
-					items.push({ json: this.getInputData(itemIndex)[0].json, error, pairedItem: itemIndex });
-				} else {
-					// Adding `itemIndex` allows other workflows to handle this error
-					if (error.context) {
-						// If the error thrown already contains the context property,
-						// only append the itemIndex
-						error.context.itemIndex = itemIndex;
-						throw error;
-					}
-					throw new NodeOperationError(this.getNode(), error, {
-						itemIndex,
-					});
-				}
-			}
-		}
-
-		return [items];
+		return [this.helpers.returnJsonArray([returnItem])];
 	}
 }

@@ -42,6 +42,7 @@
     "nodes": [
       "dist/nodes/ExampleNode/ExampleNode.node.js",
       "dist/nodes/AtendimentoNode/AtendimentoNode.node.js",
+      "dist/nodes/AtendimentoEstadoNode/AtendimentoEstadoNode.node.js",
       "dist/nodes/AtendimentoChatbotNode/AtendimentoChatbotNode.node.js",
       "dist/nodes/HttpBin/HttpBin.node.js"
     ]
