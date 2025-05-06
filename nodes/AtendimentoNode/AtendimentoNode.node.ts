@@ -16,7 +16,11 @@ export class AtendimentoNode implements INodeType {
 		defaults: {
 			name: 'Atendimento Node',
 		},
-		inputs: [NodeConnectionType.Main, {
+		inputs: [{
+			type: NodeConnectionType.Main, 
+			displayName: "Input",
+		},			
+		{
 			displayName: "Chatbots",
 			type: NodeConnectionType.Main,
 			filter: {nodes: ['n8n-nodes-atendimento.atendimentoChatbotNode']},
@@ -39,9 +43,44 @@ export class AtendimentoNode implements INodeType {
 				default: '',
 				placeholder: 'Placeholder value',
 				description: 'The description text',
-			}
+			},
+			// {
+            //     displayName: 'Tools',
+            //     name: 'tools', // O nome 'tools' é crucial para o n8n identificar como um slot de ferramentas
+            //     type: 'multiOptions', // 'multiOptions' é usado em nós como o AI Agent para permitir seleção múltipla e conexão
+            //     default: [], // Default para múltiplas ferramentas é um array vazio
+            //     description: 'Conecte nós de ferramentas ou selecione ferramentas configuradas que este nó pode utilizar.',
+            //     typeOptions: {
+            //         // loadOptionsMethod é usado para popular a lista de seleção no painel de propriedades.
+            //         // A capacidade de conectar um nó de ferramenta ao slot inferior é habilitada
+            //         // quando o n8n reconhece 'tools' como uma dependência que pode ser injetada.
+            //         loadOptionsMethod: 'getAvailableTools',
+            //     },
+            // }
 		],
 	};
+
+	// methods = {
+	// 	loadOptions: {
+	// 		async getAvailableTools(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+	// 			// Aqui você implementaria a lógica para buscar ferramentas disponíveis.
+	// 			// Por exemplo, poderia listar outros nós no workflow que são "ferramentas",
+	// 			// ou ferramentas pré-definidas.
+		
+	// 			// console.log('getAvailableTools chamado. Implemente a lógica para carregar ferramentas.');
+	// 			// Exemplo de retorno (placeholders):
+	// 			const tools: INodePropertyOptions[] = [
+	// 				// { name: 'Ferramenta Exemplo A (Configurável)', value: 'toolA_config' },
+	// 				// { name: 'Ferramenta Exemplo B (Configurável)', value: 'toolB_config' },
+	// 				// Exemplo buscando nós (requer implementação mais robusta):
+	// 				// const nodes = this.getNodes();
+	// 				// const toolNodes = nodes.filter(node => node.type.includes('ToolNode')); // Adapte o filtro
+	// 				// ...toolNodes.map(node => ({ name: node.name || node.type, value: node.id || node.name })) // Adapte conforme necessário
+	// 			];
+	// 			return tools;
+	// 		}		
+	// 	},
+	// };
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
