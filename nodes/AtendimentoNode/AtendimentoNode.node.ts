@@ -36,10 +36,36 @@ export class AtendimentoNode implements INodeType {
 			{
 				displayName: 'Chatbots',
 				name: 'chatbots',
-				type: 'string',
-				default: '',
-				placeholder: 'chatbot1, chatbot2',
-				description: 'Chatbot names, separated by commas',
+				type: 'collection',
+				default: { chatbot: [] },
+				placeholder: 'Add Chatbot',
+				description: 'Add chatbots and their versions',
+				typeOptions: {
+					multipleValues: true,
+					sortable: true,
+					options: [
+						{
+							name: 'chatbot',
+							displayName: 'Chatbot',
+							values: [
+								{
+									displayName: 'Name',
+									name: 'name',
+									type: 'string',
+									default: '',
+									description: 'Name of the chatbot',
+								},
+								{
+									displayName: 'Version',
+									name: 'version',
+									type: 'string',
+									default: '0.0.1',
+									description: 'Version of the chatbot (e.g., 0.0.1)',
+								},
+							],
+						},
+					],
+				},
 			},
 		]
 	};
@@ -47,19 +73,19 @@ export class AtendimentoNode implements INodeType {
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData()[0];
 		const requestDataType = (items.json.requestData as any).type as string;
-		const chatbots = this.getNodeParameter('chatbots', 0, '') as string;
+		const chatbotsConfig = this.getNodeParameter('chatbots', 0, { chatbot: [] }) as { chatbot: Array<{ name: string; version: string }> };       
 		var onWebResponseData: INodeExecutionData[] = []
 		var onMessageResponseData: INodeExecutionData[] = []
 		var response: any[] = []
 		if (requestDataType === 'getService') {
 			try {
-				response = chatbots.split(',').map((chatbot: string) => {
-					return {
-						"referencia": chatbot.trim(),
-						"versao": "0.0.1",
-						"tipo": "CHATBOT"
-					}
-				})
+				response = (chatbotsConfig.chatbot || []).map(chatbotEntry => {
+                    return {
+                        "referencia": chatbotEntry.name.trim(),
+                        "versao": chatbotEntry.version.trim(),
+                        "tipo": "CHATBOT"
+                    }
+                })
 			} catch (error) {
 			}
 			onWebResponseData = [{
