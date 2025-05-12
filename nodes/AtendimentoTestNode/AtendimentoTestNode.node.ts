@@ -56,7 +56,6 @@ export class AtendimentoTestNode implements INodeType {
                 default: '',
                 placeholder: 'demonstracao',
                 description: 'Client reference',
-
             },
             {
                 displayName: 'Chatbot Name',
