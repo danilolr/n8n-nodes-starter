@@ -36,15 +36,12 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "dist/credentials/ExampleCredentialsApi.credentials.js",
-      "dist/credentials/HttpBinApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/ExampleNode/ExampleNode.node.js",
+      "dist/nodes/AtendimentoTestNode/AtendimentoTestNode.node.js",
       "dist/nodes/AtendimentoNode/AtendimentoNode.node.js",
       "dist/nodes/AtendimentoEstadoNode/AtendimentoEstadoNode.node.js",
-      "dist/nodes/AtendimentoChatbotNode/AtendimentoChatbotNode.node.js",
-      "dist/nodes/HttpBin/HttpBin.node.js"
+      "dist/nodes/AtendimentoChatbotNode/AtendimentoChatbotNode.node.js"
     ]
   },
   "devDependencies": {

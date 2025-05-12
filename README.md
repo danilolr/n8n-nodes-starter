@@ -44,3 +44,29 @@ Refer to our [documentation on creating nodes](https://docs.n8n.io/integrations/
 ## License
 
 [MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+
+
+I will elaborate better on the forum. A short explanation. Nodes like AiDocument, AiModel are not standard nodes where the flow continues. They are more like services to be called by the node they are attached. So meybe we can have a option (below input and output) on the node called 'services' : 
+
+{
+  inputs : [],
+  outputs: [],
+  services: [
+    {
+      name : 'configService',
+      nodeType : 'ConfigNode', 
+    }
+  ],
+}
+
+On this node on the execute method of the node :
+
+var params = {...}
+var response = this.getService('aiDocument').execute(params)
+console.log(response) // prints {'foo': 'bar'}
+
+on the ConfigNode implementation :
+
+async execute(params: any): Promise<any> {
+  return {'foo': 'bar'}
+}

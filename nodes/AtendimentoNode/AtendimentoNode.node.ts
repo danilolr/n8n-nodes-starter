@@ -23,7 +23,7 @@ export class AtendimentoNode implements INodeType {
 			},
 			{ // Index 1 - User Input
 				displayName: "User",
-				type: NodeConnectionType.Main,
+				type: NodeConnectionType.AiAgent,
 				maxConnections: 1,
 			},
 			{ // Index 2 - Advisor Input
@@ -36,7 +36,12 @@ export class AtendimentoNode implements INodeType {
 				type: NodeConnectionType.Main,
 				maxConnections: 10,
 				required: false,
-			}
+			},
+			{
+				type: NodeConnectionType.AiLanguageModel,
+				displayName: "Model",			
+			},
+
 		], // End of inputs array, comma before next property
 		outputs: [NodeConnectionType.Main], // End of outputs array, comma before next property
 		properties: [
@@ -54,21 +59,37 @@ export class AtendimentoNode implements INodeType {
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData(0); // Assuming the primary data comes from the first input slot (index 0)
 
-		this.logger.debug('items 0', items);
+		var model: any = null;
+
+		for (let i = 0; i < 10; i++) {
+			try {
+				model = await this.getInputConnectionData(NodeConnectionType.Main, i);
+				model = {
+					ok: true,
+					model: model
+				}
+			} catch (error) {
+				this.logger.debug('Error getting input connection data: ' + error + ' for index ' + i);
+			}			
+		}
+
+		this.logger.debug('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ');
 		this.logger.debug('items 1', this.getInputData(1));
 
 		// Get data from the 'Chatbots' input (index 3)
 		// const chatbotConfigs = this.getInputData(3);
 
 		let item: INodeExecutionData;
-		let name: string;
+		// let name: string;
 
 		const allReturnItems: INodeExecutionData[] = [];
 
-		for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
+		for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {			
 			try {
-				name = this.getNodeParameter('name', itemIndex, '') as string;
+				// name = this.getNodeParameter('name', itemIndex, '') as string;
 				item = items[itemIndex];
+				item.json.teste = "CEFIP";
+				item.json.model = model ? "NULO" : JSON.stringify(model);
 				this.logger.debug('itemIndex ' + itemIndex + ":" + item);
 
 				if (item.json.tipoChamada === "getService") {
@@ -107,4 +128,5 @@ export class AtendimentoNode implements INodeType {
 		}
 		return [allReturnItems];
 	}
+
 }
