@@ -24,12 +24,14 @@ export class AtendimentoTestNode implements INodeType {
             {
                 type: NodeConnectionType.Main,
             },
+        ],
+        outputs: [
+            NodeConnectionType.Main,
 			{
 				type: NodeConnectionType.AiMemory,
 				displayName: "memory",
 			},
         ],
-        outputs: [NodeConnectionType.Main],
         properties: [
             {
                 displayName: 'Run sim',

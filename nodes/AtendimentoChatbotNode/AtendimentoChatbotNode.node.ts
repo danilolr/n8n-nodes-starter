@@ -43,8 +43,6 @@ export class AtendimentoChatbotNode implements INodeType {
 	};
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
-		// This node will now output its configured name, ignoring any input items.
-		// This makes it suitable as a configuration provider for the AtendimentoNode's 'chatbots' input.
 		const chatbotName = this.getNodeParameter('chatbotName', 0, '') as string;
 
 		const returnItem: INodeExecutionData = {
