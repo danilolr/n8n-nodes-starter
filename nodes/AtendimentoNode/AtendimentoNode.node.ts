@@ -1,10 +1,33 @@
 import type {
 	IExecuteFunctions,
 	INodeExecutionData,
+	INodeParameters,
 	INodeType,
 	INodeTypeDescription,
 } from 'n8n-workflow';
 import { NodeConnectionType } from 'n8n-workflow';
+
+const configuredOutputs = (parameters: INodeParameters) => {
+	var outputs = [
+		{
+			type: NodeConnectionType.Main,
+			displayName: "onWebResponse",
+		},
+		{
+			type: NodeConnectionType.Main,
+			displayName: "onError",
+		},
+	]
+	if (parameters.chatbots) {
+		(parameters.chatbots as any).chatbot.forEach((chatbot: any) => {
+			outputs.push({
+				type: NodeConnectionType.Main,
+				displayName: chatbot.outputName == null ? `onMessage ${chatbot.name}` : chatbot.outputName,
+			});
+		});
+	}
+	return outputs
+}
 
 export class AtendimentoNode implements INodeType {
 	description: INodeTypeDescription = {
@@ -22,25 +45,16 @@ export class AtendimentoNode implements INodeType {
 				displayName: "Input",
 			},
 		],
-		outputs: [
-			{
-				type: NodeConnectionType.Main,
-				displayName: "onWebResponse",
-			},
-			{
-				type: NodeConnectionType.Main,
-				displayName: "onMessage",
-			},
-		],
+		outputs: `={{(${configuredOutputs})($parameter)}}`,
 		properties: [
 			{
 				displayName: 'Chatbots',
 				name: 'chatbots',
 				type: 'fixedCollection',
-typeOptions: {
-    multipleValues: true,
-    sortable: true,
-},
+				typeOptions: {
+					multipleValues: true,
+					sortable: true,
+				},
 				default: { chatbot: [] },
 				placeholder: 'Add Chatbot',
 				description: 'Add chatbots and their versions',
@@ -63,6 +77,13 @@ typeOptions: {
 								default: '0.0.1',
 								description: 'Version of the chatbot (e.g., 0.0.1)',
 							},
+							{
+								displayName: 'Output Name',
+								name: 'outputName',
+								type: 'string',
+								default: 'on',
+								description: 'Output name for the chatbot',
+							},
 						],
 					},
 				],
@@ -73,19 +94,19 @@ typeOptions: {
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData()[0];
 		const requestDataType = (items.json.requestData as any).type as string;
-		const chatbotsConfig = this.getNodeParameter('chatbots', 0, { chatbot: [] }) as { chatbot: Array<{ name: string; version: string }> };       
+		const chatbotsConfig = this.getNodeParameter('chatbots', 0, { chatbot: [] }) as { chatbot: Array<{ name: string; version: string }> };
 		var onWebResponseData: INodeExecutionData[] = []
 		var onMessageResponseData: INodeExecutionData[] = []
 		var response: any[] = []
 		if (requestDataType === 'getService') {
 			try {
 				response = (chatbotsConfig.chatbot || []).map(chatbotEntry => {
-                    return {
-                        "referencia": chatbotEntry.name.trim(),
-                        "versao": chatbotEntry.version.trim(),
-                        "tipo": "CHATBOT"
-                    }
-                })
+					return {
+						"referencia": chatbotEntry.name.trim(),
+						"versao": chatbotEntry.version.trim(),
+						"tipo": "CHATBOT"
+					}
+				})
 			} catch (error) {
 			}
 			onWebResponseData = [{
