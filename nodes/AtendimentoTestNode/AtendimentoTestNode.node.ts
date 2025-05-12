@@ -23,24 +23,73 @@ export class AtendimentoTestNode implements INodeType {
         inputs: [
             {
                 type: NodeConnectionType.Main,
-            }
+            },
+			{
+				type: NodeConnectionType.AiMemory,
+				displayName: "memory",
+			},
         ],
         outputs: [NodeConnectionType.Main],
         properties: [
             {
                 displayName: 'Run sim',
                 name: 'runType',
+                type: 'options',
+                options: [
+                    {
+                        name: 'Get Service',
+                        value: 'getService',
+                    },
+                    {
+                        name: 'Get Conselheiro',
+                        value: 'getConselheiro',
+                    },
+                ],
+                default: 'getService',
+                description: 'Sim to run',
+            },
+            {
+                displayName: 'Client Reference',
+                name: 'refCliente',
                 type: 'string',
                 default: '',
-                placeholder: 'getService',
-                description: 'Sim to run',
+                placeholder: 'demonstracao',
+                description: 'Client reference',
 
+            },
+            {
+                displayName: 'Channel User ID',
+                name: 'channelUserId',
+                type: 'string',
+                default: '',
+                placeholder: '5548988010101',
+                description: 'Channel User ID',
+            },
+            {
+                displayName: 'Communication Channel Type',
+                name: 'communicationChannelType',
+                type: 'options',
+                options: [
+                    {
+                        name: 'Whatsapp',
+                        value: 'WHATSAPP',
+                    },
+                    {
+                        name: 'Telegram',
+                        value: 'TELEGRAM',
+                    },
+                ],
+                default: 'getService',
+                description: 'Sim to run',
             }
         ],
     };
 
     async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
         const runType = this.getNodeParameter('runType', 0, '') as string;
+        const refCliente = this.getNodeParameter('refCliente', 0, '') as string;
+        const communicationChannelType = this.getNodeParameter('communicationChannelType', 0, '') as string;
+        var channelUserId = this.getNodeParameter('channelUserId', 0, '') as string;
         var requestData: any = {};
         const input = this.getInputData(0)[0]
         var debugInfo = {}
@@ -52,8 +101,18 @@ export class AtendimentoTestNode implements INodeType {
                 requestData = {
                     "type": "onStartMessage",
                     "payload": {
-                        "type": "TEXT",
-                        "texto": input.json.chatInput
+                        "context":
+                        {
+                            "identifadorUsuarioCanal": channelUserId,
+                            "refCliente": refCliente,
+                            "tipoCanalComunicacao": communicationChannelType,
+                            "uuidConversa": sessionId,
+                            "variables": {}
+                        },
+                        "param": {
+                            "type": "TEXT",
+                            "texto": input.json.chatInput
+                        }
                     }
                 }
                 globalSessions[sessionId.toString()] = true
@@ -61,8 +120,18 @@ export class AtendimentoTestNode implements INodeType {
                 requestData = {
                     "type": "onStartConversation",
                     "payload": {
-                        "type": "TEXT",
-                        "texto": input.json.chatInput
+                        "context":
+                        {
+                            "identifadorUsuarioCanal": channelUserId,
+                            "refCliente": refCliente,
+                            "tipoCanalComunicacao": communicationChannelType,
+                            "uuidConversa": sessionId,
+                            "variables": {}
+                        },
+                        "param": {
+                            "type": "TEXT",
+                            "texto": input.json.chatInput
+                        }
                     }
                 }
             }
@@ -70,22 +139,6 @@ export class AtendimentoTestNode implements INodeType {
             requestData = {
                 "type": "getService",
                 "payload": {}
-            }
-        } else if (runType === 'onStartConversation') {
-            requestData = {
-                "type": "onStartConversation",
-                "payload": {
-                    "type": "TEXT",
-                    "texto": "Bom dia onStartConversation"
-                }
-            }
-        } else if (runType === 'onMessage') {
-            requestData = {
-                "type": "onMessage",
-                "payload": {
-                    "type": "TEXT",
-                    "texto": "Bom dia onMessage"
-                }
             }
         } else {
             requestData = { "tipo": "erro" }
