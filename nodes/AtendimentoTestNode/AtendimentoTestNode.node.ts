@@ -6,10 +6,7 @@ import type {
 } from 'n8n-workflow';
 import { NodeConnectionType } from 'n8n-workflow';
 
-var globalSessions: { [key: string]: any } = {};
-
 export class AtendimentoTestNode implements INodeType {
-
 
     description: INodeTypeDescription = {
         displayName: 'Atendimento Test',
@@ -62,6 +59,14 @@ export class AtendimentoTestNode implements INodeType {
 
             },
             {
+                displayName: 'Chatbot Name',
+                name: 'chatbotName',
+                type: 'string',
+                default: '',
+                placeholder: 'formfeed-chatbot-vendas',
+                description: 'Chatbot name',
+            },
+            {
                 displayName: 'Channel User ID',
                 name: 'channelUserId',
                 type: 'string',
@@ -93,6 +98,7 @@ export class AtendimentoTestNode implements INodeType {
         // const subNodeData = await this.getInputConnectionData(NodeConnectionType.AiMemory, 1); 
         const runType = this.getNodeParameter('runType', 0, '') as string;
         const refCliente = this.getNodeParameter('refCliente', 0, '') as string;
+        const chatbotName = this.getNodeParameter('chatbotName', 0, '') as string;
         const communicationChannelType = this.getNodeParameter('communicationChannelType', 0, '') as string;
         var channelUserId = this.getNodeParameter('channelUserId', 0, '') as string;
         var requestData: any = {};
@@ -101,7 +107,7 @@ export class AtendimentoTestNode implements INodeType {
 
         var sessionId = input.json.sessionId
         if (sessionId) {
-            const session = globalSessions[sessionId.toString()]
+            const session = null //globalSessions[sessionId.toString()]
             if (session) {
                 requestData = {
                     "type": "onStartMessage",
@@ -112,6 +118,8 @@ export class AtendimentoTestNode implements INodeType {
                             "refCliente": refCliente,
                             "tipoCanalComunicacao": communicationChannelType,
                             "uuidConversa": sessionId,
+                            "chatbotName": chatbotName,
+                            "newSession": false,
                             "variables": {}
                         },
                         "param": {
@@ -120,7 +128,7 @@ export class AtendimentoTestNode implements INodeType {
                         }
                     }
                 }
-                globalSessions[sessionId.toString()] = true
+                // globalSessions[sessionId.toString()] = true
             } else {
                 requestData = {
                     "type": "onStartConversation",
@@ -130,6 +138,8 @@ export class AtendimentoTestNode implements INodeType {
                             "identifadorUsuarioCanal": channelUserId,
                             "refCliente": refCliente,
                             "tipoCanalComunicacao": communicationChannelType,
+                            "chatbotName": chatbotName,
+                            "newSession": true,
                             "uuidConversa": sessionId,
                             "variables": {}
                         },

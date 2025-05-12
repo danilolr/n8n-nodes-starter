@@ -1,10 +1,8 @@
 import type {
-	IAllExecuteFunctions,
 	IExecuteFunctions,
 	INodeExecutionData,
 	INodeType,
 	INodeTypeDescription,
-	SupplyData,
 } from 'n8n-workflow';
 import { NodeConnectionType } from 'n8n-workflow';
 
@@ -21,12 +19,7 @@ export class AtendimentoChatbotNode implements INodeType {
 		inputs: [
 			{
 				type: NodeConnectionType.Main,
-				displayName: "Entrypoint",
 			},
-			{
-				type: NodeConnectionType.Main,
-				displayName: "Start state",
-			}
 		],
 		outputs: [NodeConnectionType.Main],
 		outputNames: ['Model'],
@@ -52,14 +45,6 @@ export class AtendimentoChatbotNode implements INodeType {
 		};
 
 		return [this.helpers.returnJsonArray([returnItem])];
-	}
-
-	async supplyData(this: IAllExecuteFunctions, itemIndex: number): Promise<SupplyData> {
-		return {
-			response: {
-				chatbotName: this.getNodeParameter('chatbotName', 0, '') as string
-			},
-		}		
 	}
 
 }

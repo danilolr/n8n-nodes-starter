@@ -36,36 +36,36 @@ export class AtendimentoNode implements INodeType {
 			{
 				displayName: 'Chatbots',
 				name: 'chatbots',
-				type: 'collection',
+				type: 'fixedCollection',
+typeOptions: {
+    multipleValues: true,
+    sortable: true,
+},
 				default: { chatbot: [] },
 				placeholder: 'Add Chatbot',
 				description: 'Add chatbots and their versions',
-				typeOptions: {
-					multipleValues: true,
-					sortable: true,
-					options: [
-						{
-							name: 'chatbot',
-							displayName: 'Chatbot',
-							values: [
-								{
-									displayName: 'Name',
-									name: 'name',
-									type: 'string',
-									default: '',
-									description: 'Name of the chatbot',
-								},
-								{
-									displayName: 'Version',
-									name: 'version',
-									type: 'string',
-									default: '0.0.1',
-									description: 'Version of the chatbot (e.g., 0.0.1)',
-								},
-							],
-						},
-					],
-				},
+				options: [
+					{
+						name: 'chatbot',
+						displayName: 'Chatbot',
+						values: [
+							{
+								displayName: 'Name',
+								name: 'name',
+								type: 'string',
+								default: '',
+								description: 'Name of the chatbot',
+							},
+							{
+								displayName: 'Version',
+								name: 'version',
+								type: 'string',
+								default: '0.0.1',
+								description: 'Version of the chatbot (e.g., 0.0.1)',
+							},
+						],
+					},
+				],
 			},
 		]
 	};
