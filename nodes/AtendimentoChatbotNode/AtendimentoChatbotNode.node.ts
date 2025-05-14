@@ -8,7 +8,7 @@ import { NodeConnectionType } from 'n8n-workflow';
 
 export class AtendimentoChatbotNode implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'Atendimento Chatbot Node',
+		displayName: 'Atendimento Chatbot',
 		name: 'atendimentoChatbotNode',
 		group: ['transform'],
 		version: 1,

@@ -31,11 +31,11 @@ const configuredOutputs = (parameters: INodeParameters) => {
 
 export class AtendimentoNode implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'Atendimento Node',
+		displayName: 'Atendimento',
 		name: 'atendimentoNode',
 		group: ['transform'],
 		version: 1,
-		description: 'Atendimento Node', // Node's main description
+		description: 'Atendimento Node',
 		defaults: {
 			name: 'Atendimento Node',
 		},
@@ -93,10 +93,16 @@ export class AtendimentoNode implements INodeType {
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData()[0];
-		const requestDataType = (items.json.requestData as any).type as string;
+		const requestData = items.json.requestData as { type: string; payload: any };
+		const requestDataType = requestData.type as string;
 		const chatbotsConfig = this.getNodeParameter('chatbots', 0, { chatbot: [] }) as { chatbot: Array<{ name: string; version: string }> };
 		var onWebResponseData: INodeExecutionData[] = []
-		var onMessageResponseData: INodeExecutionData[] = []
+		var onError: INodeExecutionData[] = []
+		var onMessageResponseData: INodeExecutionData[][] = []
+		chatbotsConfig.chatbot.forEach((chatbotEntry: { name: string; version: string }) => {
+			onMessageResponseData.push([])
+		})
+	
 		var response: any[] = []
 		if (requestDataType === 'getService') {
 			try {
@@ -116,26 +122,26 @@ export class AtendimentoNode implements INodeType {
 				}
 				,
 			}];
-		} else if (requestDataType === 'onStartConversation') {
-			onMessageResponseData = [{
-				json: {
-					"ok": true,
-					"response": (items.json.requestData as any).payload
+		} else if (requestDataType === 'onStartConversation' || requestDataType === 'onMessage') {
+			const chatbotName = requestData.payload.context.chatbotName as string;
+			var p = 0
+			chatbotsConfig.chatbot.forEach((chatbotEntry: { name: string; version: string }) => {
+				if (chatbotEntry.name == chatbotName) {
+					onMessageResponseData[p] = [{
+						json: {
+							"ok": true,
+							"response": (items.json.requestData as any).payload
+						}
+						,
+					}]	
 				}
-				,
-			}];
-		} else if (requestDataType === 'onMessage') {
-			onMessageResponseData = [{
-				json: {
-					"ok": true,
-					"response": (items.json.requestData as any).payload
-				}
-				,
-			}];
-		}
+				p++
+			})
+		} 
 		return [
 			this.helpers.returnJsonArray(onWebResponseData),
-			this.helpers.returnJsonArray(onMessageResponseData),
+			this.helpers.returnJsonArray(onError),
+			...onMessageResponseData
 		];
 	}
 

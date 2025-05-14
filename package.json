@@ -41,7 +41,10 @@
       "dist/nodes/AtendimentoTestNode/AtendimentoTestNode.node.js",
       "dist/nodes/AtendimentoNode/AtendimentoNode.node.js",
       "dist/nodes/AtendimentoEstadoNode/AtendimentoEstadoNode.node.js",
-      "dist/nodes/AtendimentoChatbotNode/AtendimentoChatbotNode.node.js"
+      "dist/nodes/AtendimentoChatbotNode/AtendimentoChatbotNode.node.js",
+      "dist/nodes/AtendimentoEstadoMenuNode/AtendimentoEstadoMenuNode.node.js",
+      "dist/nodes/AtendimentoChatbotDemoEchoNode/AtendimentoChatbotDemoEchoNode.node.js",
+      "dist/nodes/AtendimentoChatbotEstadoNode/AtendimentoChatbotEstadoNode.node.js"
     ]
   },
   "devDependencies": {

@@ -31,21 +31,12 @@ export class AtendimentoEstadoNode implements INodeType {
 	};
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
-		// This node will now output its configured name, ignoring any input items.
-		// This makes it suitable as a configuration provider for the AtendimentoNode's 'chatbots' input.
 		const referencia = this.getNodeParameter('referencia', 0, '') as string;
-
-		// It's good practice to ensure a chatbotName is provided.
-		// If chatbotName can be empty, this logic might need adjustment based on requirements.
-		// For now, we assume chatbotName will be configured.
-
 		const returnItem: INodeExecutionData = {
 			json: {
 				referencia: referencia,
 			},
-			// No pairedItem context here as it's generating its own, single item.
 		};
-
 		return [this.helpers.returnJsonArray([returnItem])];
 	}
 }

@@ -9,7 +9,7 @@ import { NodeConnectionType } from 'n8n-workflow';
 export class AtendimentoTestNode implements INodeType {
 
     description: INodeTypeDescription = {
-        displayName: 'Atendimento Test',
+        displayName: 'Atendimento Teste',
         name: 'atendimentoTest',
         group: ['transform'],
         version: 1,
