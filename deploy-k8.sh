@@ -92,7 +92,7 @@ echo '--- [POD] Etapa 3/6: Removendo instalação custom antiga em /home/node/.n
 rm -rf /home/node/.n8n/custom/n8n-nodes-atendimento/; \
 echo '--- [POD] Etapa 4/6: Garantindo que o diretório /home/node/.n8n/custom/ exista... ---'; \
 mkdir -p /home/node/.n8n/custom/; \
-echo '--- [POD] Etapa 5/6: Movendo novo diretório dist para /home/node/.n8n/custom/... ---'; \
+echo '--- [POD] Etapa 5/6: Movendo novo diretório dist para /home/node/.n8n/custom/... $NOME_ARQUIVO_DESTINO ---'; \
 mv dist/ /home/node/.n8n/custom/; \
 echo '--- [POD] Etapa 6/6: Removendo o arquivo $NOME_ARQUIVO_DESTINO do pod... ---'; \
 rm '$NOME_ARQUIVO_DESTINO'; \
@@ -134,6 +134,7 @@ echo '--- [POD] Todas as etapas de setup e limpeza no pod foram concluídas com 
     echo
     echo "ERRO: Falha ao executar comandos de setup e limpeza dentro do pod '$POD_COMPLETO'."
     echo "Verifique as mensagens de erro detalhadas do kubectl ou os logs do pod (a saída acima pode conter detalhes)."
+    echo "kubectl exec -it $POD_COMPLETO -n=$NAMESPACE -- ash"
     exit 1 
   fi
 else

@@ -17,7 +17,11 @@ export class AtendimentoChatbotEstadoNode implements INodeType {
             name: 'Atendimento Chatbot Estado',
         },
         inputs: [NodeConnectionType.Main],
-        outputs: [NodeConnectionType.Main],
+        outputs: [{
+            type: NodeConnectionType.Main,
+            displayName: 'startState',
+        }
+        ],
         properties: [
         ],
     };

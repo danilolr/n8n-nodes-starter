@@ -93,7 +93,8 @@ export class AtendimentoNode implements INodeType {
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData()[0];
-		const requestData = items.json.requestData as { type: string; payload: any };
+		const requestData = ((items.json.requestData!=null) ? items.json.requestData : items.json.body ) as { type: string; payload: any };
+		this.logger.error("REQUEST DATA : " + JSON.stringify(requestData));
 		const requestDataType = requestData.type as string;
 		const chatbotsConfig = this.getNodeParameter('chatbots', 0, { chatbot: [] }) as { chatbot: Array<{ name: string; version: string }> };
 		var onWebResponseData: INodeExecutionData[] = []
@@ -122,15 +123,16 @@ export class AtendimentoNode implements INodeType {
 				}
 				,
 			}];
-		} else if (requestDataType === 'onStartConversation' || requestDataType === 'onMessage') {
+		} else if (requestDataType === 'onStartConversation' || requestDataType === 'onMessage') {			
 			const chatbotName = requestData.payload.context.chatbotName as string;
+			this.logger.error("Passando aqui no onMessage" + JSON.stringify(requestData.payload));
 			var p = 0
 			chatbotsConfig.chatbot.forEach((chatbotEntry: { name: string; version: string }) => {
 				if (chatbotEntry.name == chatbotName) {
 					onMessageResponseData[p] = [{
 						json: {
 							"ok": true,
-							"response": (items.json.requestData as any).payload
+							"response": requestData.payload
 						}
 						,
 					}]	

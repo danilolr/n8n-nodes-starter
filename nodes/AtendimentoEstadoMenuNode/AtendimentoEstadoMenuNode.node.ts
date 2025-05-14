@@ -1,10 +1,33 @@
 import type {
     IExecuteFunctions,
     INodeExecutionData,
+    INodeParameters,
     INodeType,
     INodeTypeDescription,
 } from 'n8n-workflow';
 import { NodeConnectionType } from 'n8n-workflow'; 
+
+const configuredOutputs = (parameters: INodeParameters) => {
+	var outputs = [
+	]
+	outputs.push(		{
+		type: NodeConnectionType.Main,
+		displayName: null,
+	})
+	if (parameters.estados) {
+		(parameters.estados as any).estado.forEach((estado: any) => {
+			outputs.push({
+				type: NodeConnectionType.Main,
+				displayName: estado.outputName == null || estado.outputName == "" ? `onOption${estado.key}` : estado.outputName,
+			});
+		});
+	}
+	outputs.push({
+		type: NodeConnectionType.Main,
+		displayName: "onNone",
+	});
+    return outputs
+}
 
 export class AtendimentoEstadoMenuNode implements INodeType {
     description: INodeTypeDescription = {
@@ -16,16 +39,26 @@ export class AtendimentoEstadoMenuNode implements INodeType {
         defaults: {
             name: 'Estado Menu',
         },
-        inputs: [],
-        outputs: [NodeConnectionType.Main],
+        inputs: [{
+			type: NodeConnectionType.Main
+		}],
+        outputs: `={{(${configuredOutputs})($parameter)}}`,
         properties: [
 			{
-				displayName: 'Promt menu',
+				displayName: 'Prompt menu',
 				name: 'promptMenu',
 				type: 'string',
 				default: 'Selecione uma opção',
 				placeholder: 'Prompt',
-				description: 'Propmt do a ser mostrado para o usuário',
+				description: 'Prompt do a ser mostrado para o usuário',
+			},
+			{
+				displayName: 'Mensagem entrada',
+				name: 'mensagemEntrada',
+				type: 'string',
+				default: 'Mensagem ao entrar no estado',
+				placeholder: 'Mensagem',
+				description: 'Mensagem a ser mostrada ao entrar no estado',
 			},
             {
 				displayName: 'Estados',
@@ -47,21 +80,21 @@ export class AtendimentoEstadoMenuNode implements INodeType {
 								displayName: 'Key',
 								name: 'key',
 								type: 'string',
-								default: '1',
-								description: 'Tecla pressionada',
+								default: '',
+								description: 'Opção digitada',
 							},
 							{
 								displayName: 'Texto',
 								name: 'texto',
 								type: 'string',
-								default: 'Selecione esta opção para ...',
-								description: 'Texto do menu',
+								default: '',
+								description: 'Texto do menu (Selecione esta opção para ...)',
 							},
 							{
 								displayName: 'Nome saída',
 								name: 'outputName',
 								type: 'string',
-								default: 'on',
+								default: '',
 								description: 'Nome da saída',
 							},
 						],

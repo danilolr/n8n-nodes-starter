@@ -8,7 +8,7 @@ import { NodeConnectionType } from 'n8n-workflow';
 
 export class AtendimentoChatbotDemoEchoNode implements INodeType {
     description: INodeTypeDescription = {
-        displayName: 'Chatbot Echo',
+        displayName: 'Atendimento Chatbot Echo',
         name: 'atendimentoChatbotDemoEchoNode',
         group: ['transform'],
         version: 1,
@@ -26,7 +26,7 @@ export class AtendimentoChatbotDemoEchoNode implements INodeType {
         const input = this.getInputData()[0] as any;
         const texto = input.json.response.param.texto.trim();
         var response
-        if (texto.toUpperCase().indexOf("ENCERRAR")!=-1) {
+        if (texto.toUpperCase().indexOf("ENCERRAR") != -1) {
             response = {
                 ok: true,
                 encerra: true,
@@ -41,8 +41,7 @@ export class AtendimentoChatbotDemoEchoNode implements INodeType {
                     }
                 ]
             }
-        }
-        if (texto.toUpperCase().indexOf("ATENDENTE")!=-1) {
+        } else if (texto.toUpperCase().indexOf("ATENDENTE") != -1) {
             response = {
                 ok: true,
                 transferencia: {},
@@ -54,6 +53,16 @@ export class AtendimentoChatbotDemoEchoNode implements INodeType {
                     {
                         tipo: "TEXTO",
                         texto: "Transferindo para atendente",
+                    }
+                ]
+            }
+        } else {
+            response = {
+                ok: true,
+                mensagem: [
+                    {
+                        tipo: "TEXTO",
+                        texto: "Echo bot : " + texto + " - v0.0.2",
                     }
                 ]
             }
