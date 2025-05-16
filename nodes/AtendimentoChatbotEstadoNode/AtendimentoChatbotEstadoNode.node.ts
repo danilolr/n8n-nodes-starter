@@ -4,7 +4,7 @@ import type {
     INodeType,
     INodeTypeDescription,
 } from 'n8n-workflow';
-import { NodeConnectionType } from 'n8n-workflow'; 
+import { NodeConnectionType } from 'n8n-workflow';
 
 export class AtendimentoChatbotEstadoNode implements INodeType {
     description: INodeTypeDescription = {
@@ -16,7 +16,10 @@ export class AtendimentoChatbotEstadoNode implements INodeType {
         defaults: {
             name: 'Atendimento Chatbot Estado',
         },
-        inputs: [NodeConnectionType.Main],
+        inputs: [NodeConnectionType.Main, {
+            type: NodeConnectionType.Main,
+            displayName: 'callback',
+        }],
         outputs: [{
             type: NodeConnectionType.Main,
             displayName: 'startState',
@@ -30,7 +33,11 @@ export class AtendimentoChatbotEstadoNode implements INodeType {
         const input = this.getInputData()[0];
         const returnItem: INodeExecutionData = {
             json: {
-                processou: input
+                call: {
+                    type: "probe",
+                    callsDone: []
+                },
+                context: input,
             },
         };
         return [this.helpers.returnJsonArray([returnItem])];
