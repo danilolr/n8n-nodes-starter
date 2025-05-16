@@ -1,3 +1,5 @@
+/// <reference lib="dom" />
+
 import type {
     IExecuteFunctions,
     INodeExecutionData,
@@ -40,29 +42,49 @@ export class TelegramChatNode implements INodeType {
 
     async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
         this.logger.debug("TelegramChatNode execute");
+        const input = this.getInputData(0)[0] as any
+
         const credentials = await this.getCredentials('redis');
 
-        const redisClient = createClient({ url: 'redis://root:7b2074cca17c32673f912f03e385886448d363b4a3d1c1c0381229186b29a425@redis-13072.c8.us-east-1-3.ec2.redns.redis-cloud.com:13072' });
-        redisClient.on('error', (err) => console.log('Redis Client Error', err));
+        const redisUrl = `redis://${credentials.user}:${credentials.password}@${credentials.host}:${credentials.port}`;
+        const redisClient = createClient({ url: redisUrl });
+        redisClient.on('error', (err: any) => this.logger.error('Redis Client Error', err));
 
         await redisClient.connect();
 
-        const setValue = async (key: string, value: string): Promise<void> => {
-          await redisClient.set(key, value);
+        // const setValue = async (key: string, value: string): Promise<void> => {
+        //   await redisClient.set(key, value);
+        // };
+
+                const deleteKey = async (key: string): Promise<void> => {
+          await redisClient.del(key);
         };
 
         const getValue = async (key: string): Promise<string | null> => {
           return redisClient.get(key);
         };
 
-        setValue("cefip", "teste");
+        const key = 'pending_webhook_' + input.json.message.chat.id 
 
-        const returnItem: INodeExecutionData = {
-            json: {
-                ok: true,
-                credentials: credentials
-            },
-        };
-        return [this.helpers.returnJsonArray([returnItem])];
+        const value = await getValue(key);
+
+        if (value) {
+            const callbackInfo = JSON.parse(value);
+            await fetch(callbackInfo.url);
+            await deleteKey(key);
+            return [];
+        } else {
+            const returnItem: INodeExecutionData = {
+                json: {
+                    ok: true,
+                    credentials: credentials,
+                    key : key,
+                    value: value,
+                    input:input,
+                    redisUrl:redisUrl
+                },
+            };
+            return [this.helpers.returnJsonArray([returnItem])];    
+        }
     }
 }
