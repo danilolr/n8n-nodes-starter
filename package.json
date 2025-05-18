@@ -46,7 +46,10 @@
       "dist/nodes/AtendimentoChatbotEstadoNode/AtendimentoChatbotEstadoNode.node.js",
       "dist/nodes/AtendimentoMensagemTextoNode/AtendimentoMensagemTextoNode.node.js",
       "dist/nodes/AtendimentoEstadoIANode/AtendimentoEstadoIANode.node.js",
-      "dist/nodes/TelegramChatNode/TelegramChatNode.node.js"
+      "dist/nodes/TelegramChatNode/TelegramChatNode.node.js",
+      "dist/nodes/TelegramMenuNode/TelegramMenuNode.node.js",
+      "dist/nodes/TelegramWaitMessageNode/TelegramWaitMessageNode.node.js"
+      
     ]
   },
   "devDependencies": {

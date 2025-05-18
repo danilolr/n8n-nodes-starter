@@ -121,7 +121,6 @@ export class AtendimentoNode implements INodeType {
 					"ok": true,
 					"response": response
 				}
-				,
 			}];
 		} else if (requestDataType === 'onStartConversation' || requestDataType === 'onMessage') {			
 			const chatbotName = requestData.payload.context.chatbotName as string;

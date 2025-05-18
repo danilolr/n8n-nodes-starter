@@ -7,7 +7,7 @@ import type {
     INodeTypeDescription,
 } from 'n8n-workflow';
 import { NodeConnectionType } from 'n8n-workflow';
-import { createClient } from 'redis';
+import { RedisService } from './redis.util';
 
 export class TelegramChatNode implements INodeType {
 
@@ -47,44 +47,23 @@ export class TelegramChatNode implements INodeType {
         const credentials = await this.getCredentials('redis');
 
         const redisUrl = `redis://${credentials.user}:${credentials.password}@${credentials.host}:${credentials.port}`;
-        const redisClient = createClient({ url: redisUrl });
-        redisClient.on('error', (err: any) => this.logger.error('Redis Client Error', err));
+        const redisService = new RedisService(redisUrl);
+        redisService.connect();
 
-        await redisClient.connect();
-
-        // const setValue = async (key: string, value: string): Promise<void> => {
-        //   await redisClient.set(key, value);
-        // };
-
-                const deleteKey = async (key: string): Promise<void> => {
-          await redisClient.del(key);
-        };
-
-        const getValue = async (key: string): Promise<string | null> => {
-          return redisClient.get(key);
-        };
+        console.log("Conectado ao Redis:", redisUrl);
 
         const key = 'pending_webhook_' + input.json.message.chat.id 
 
-        const value = await getValue(key);
+        const value = await redisService.getValue(key);
 
+        redisService.disconnect();
         if (value) {
             const callbackInfo = JSON.parse(value);
             await fetch(callbackInfo.url);
-            await deleteKey(key);
+            await redisService.deleteKey(key);
             return [];
         } else {
-            const returnItem: INodeExecutionData = {
-                json: {
-                    ok: true,
-                    credentials: credentials,
-                    key : key,
-                    value: value,
-                    input:input,
-                    redisUrl:redisUrl
-                },
-            };
-            return [this.helpers.returnJsonArray([returnItem])];    
+            return [this.getInputData(0)];
         }
     }
 }
