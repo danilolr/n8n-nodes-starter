@@ -48,8 +48,12 @@
       "dist/nodes/AtendimentoEstadoIANode/AtendimentoEstadoIANode.node.js",
       "dist/nodes/TelegramChatNode/TelegramChatNode.node.js",
       "dist/nodes/TelegramMenuNode/TelegramMenuNode.node.js",
-      "dist/nodes/TelegramWaitMessageNode/TelegramWaitMessageNode.node.js"
-      
+      "dist/nodes/TelegramWaitMessageNode/TelegramWaitMessageNode.node.js",
+      "dist/nodes/CbMsgAddNode/CbMsgAddNode.node.js",
+      "dist/nodes/CbMsgFlushNode/CbMsgFlushNode.node.js",
+      "dist/nodes/CbFinishNode/CbFinish.node.js",
+      "dist/nodes/CbTransferNode/CbTransfer.node.js",
+      "dist/nodes/CbWaitForReply/CbWaitForReply.node.js"      
     ]
   },
   "devDependencies": {

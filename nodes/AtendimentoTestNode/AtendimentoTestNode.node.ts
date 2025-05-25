@@ -122,7 +122,7 @@ export class AtendimentoTestNode implements INodeType {
                             "variables": {}
                         },
                         "param": {
-                            "type": "TEXT",
+                            "type": "TEXTO",
                             "texto": input.json.chatInput
                         }
                     }
@@ -134,7 +134,7 @@ export class AtendimentoTestNode implements INodeType {
                     "payload": {
                         "context":
                         {
-                            "identifadorUsuarioCanal": channelUserId,
+                            "identificadorUsuarioCanal": channelUserId,
                             "refCliente": refCliente,
                             "tipoCanalComunicacao": communicationChannelType,
                             "chatbotName": chatbotName,

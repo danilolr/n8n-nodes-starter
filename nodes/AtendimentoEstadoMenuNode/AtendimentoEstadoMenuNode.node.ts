@@ -12,7 +12,7 @@ const configuredOutputs = (parameters: INodeParameters) => {
 	]
 	outputs.push(		{
 		type: NodeConnectionType.Main,
-		displayName: null,
+		displayName: "wait",
 	})
 	if (parameters.estados) {
 		(parameters.estados as any).estado.forEach((estado: any) => {
@@ -41,6 +41,9 @@ export class AtendimentoEstadoMenuNode implements INodeType {
         },
         inputs: [{
 			type: NodeConnectionType.Main
+		}, {
+			type: NodeConnectionType.Main,
+			displayName: 'onWait',
 		}],
         outputs: `={{(${configuredOutputs})($parameter)}}`,
         properties: [
@@ -111,6 +114,6 @@ export class AtendimentoEstadoMenuNode implements INodeType {
                 referencia: referencia,
             },
         };
-        return [this.helpers.returnJsonArray([returnItem])];
+        return [this.helpers.returnJsonArray([returnItem])]
     }
 }

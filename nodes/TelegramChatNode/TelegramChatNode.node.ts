@@ -41,29 +41,25 @@ export class TelegramChatNode implements INodeType {
     };
 
     async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
-        this.logger.debug("TelegramChatNode execute");
+        this.logger.debug("TelegramChatNode execute")
         const input = this.getInputData(0)[0] as any
 
-        const credentials = await this.getCredentials('redis');
-
-        const redisUrl = `redis://${credentials.user}:${credentials.password}@${credentials.host}:${credentials.port}`;
-        const redisService = new RedisService(redisUrl);
-        redisService.connect();
-
-        console.log("Conectado ao Redis:", redisUrl);
+        const credentials = await this.getCredentials('redis')
+        const redisService = new RedisService(credentials)
+        redisService.connect()
 
         const key = 'pending_webhook_' + input.json.message.chat.id 
 
-        const value = await redisService.getValue(key);
+        const value = await redisService.getValue(key)
 
-        redisService.disconnect();
+        await redisService.disconnect()
         if (value) {
-            const callbackInfo = JSON.parse(value);
-            await fetch(callbackInfo.url);
-            await redisService.deleteKey(key);
-            return [];
+            const callbackInfo = JSON.parse(value)
+            await fetch(callbackInfo.url)
+            await redisService.deleteKey(key)
+            return []
         } else {
-            return [this.getInputData(0)];
+            return [this.getInputData(0)]
         }
     }
 }

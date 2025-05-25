@@ -5,7 +5,8 @@ import type {
 	INodeType,
 	INodeTypeDescription,
 } from 'n8n-workflow';
-import { NodeConnectionType } from 'n8n-workflow';
+import { NodeConnectionType } from 'n8n-workflow'
+import { processMessages } from './process.message'
 
 const configuredOutputs = (parameters: INodeParameters) => {
 	var outputs = [
@@ -39,6 +40,12 @@ export class AtendimentoNode implements INodeType {
 		defaults: {
 			name: 'Atendimento Node',
 		},
+		credentials: [
+			{
+				name: 'redis',
+				required: true,
+			},
+		],
 		inputs: [
 			{
 				type: NodeConnectionType.Main,
@@ -93,7 +100,7 @@ export class AtendimentoNode implements INodeType {
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData()[0];
-		const requestData = ((items.json.requestData!=null) ? items.json.requestData : items.json.body ) as { type: string; payload: any };
+		const requestData = ((items.json.requestData != null) ? items.json.requestData : items.json.body) as { type: string; payload: any };
 		this.logger.error("REQUEST DATA : " + JSON.stringify(requestData));
 		const requestDataType = requestData.type as string;
 		const chatbotsConfig = this.getNodeParameter('chatbots', 0, { chatbot: [] }) as { chatbot: Array<{ name: string; version: string }> };
@@ -103,7 +110,7 @@ export class AtendimentoNode implements INodeType {
 		chatbotsConfig.chatbot.forEach((chatbotEntry: { name: string; version: string }) => {
 			onMessageResponseData.push([])
 		})
-	
+
 		var response: any[] = []
 		if (requestDataType === 'getService') {
 			try {
@@ -121,29 +128,25 @@ export class AtendimentoNode implements INodeType {
 					"ok": true,
 					"response": response
 				}
-			}];
-		} else if (requestDataType === 'onStartConversation' || requestDataType === 'onMessage') {			
-			const chatbotName = requestData.payload.context.chatbotName as string;
-			this.logger.error("Passando aqui no onMessage" + JSON.stringify(requestData.payload));
-			var p = 0
-			chatbotsConfig.chatbot.forEach((chatbotEntry: { name: string; version: string }) => {
-				if (chatbotEntry.name == chatbotName) {
-					onMessageResponseData[p] = [{
-						json: {
-							"ok": true,
-							"response": requestData.payload
-						}
-						,
-					}]	
+			}]
+		} else if (requestDataType === 'onStartConversation' || requestDataType === 'onMessage') {
+			await processMessages(this, requestData, chatbotsConfig, onMessageResponseData)
+			onWebResponseData = [{
+				json: {
+					"ok": true,
+					"response":
+					{
+						"ok": true,
+						"mensagem": []
+					}
 				}
-				p++
-			})
-		} 
+			}];
+		}
 		return [
 			this.helpers.returnJsonArray(onWebResponseData),
 			this.helpers.returnJsonArray(onError),
 			...onMessageResponseData
-		];
+		]
 	}
 
 }

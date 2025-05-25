@@ -23,8 +23,8 @@ export class AtendimentoChatbotDemoEchoNode implements INodeType {
     };
 
     async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
-        const input = this.getInputData()[0] as any;
-        const texto = input.json.response.param.texto.trim();
+        const input = this.getInputData()[0] as any
+        const texto = input.json.response.param.mensagem.trim()
         var response
         if (texto.toUpperCase().indexOf("ENCERRAR") != -1) {
             response = {
