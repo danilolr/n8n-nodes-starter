@@ -51,8 +51,8 @@
       "dist/nodes/TelegramWaitMessageNode/TelegramWaitMessageNode.node.js",
       "dist/nodes/CbMsgAddNode/CbMsgAddNode.node.js",
       "dist/nodes/CbMsgFlushNode/CbMsgFlushNode.node.js",
-      "dist/nodes/CbFinishNode/CbFinish.node.js",
-      "dist/nodes/CbTransferNode/CbTransfer.node.js",
+      "dist/nodes/CbFinish/CbFinish.node.js",
+      "dist/nodes/CbTransfer/CbTransfer.node.js",
       "dist/nodes/CbWaitForReply/CbWaitForReply.node.js"      
     ]
   },
