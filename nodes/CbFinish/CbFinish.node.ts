@@ -12,7 +12,7 @@ export class CbFinish implements INodeType {
     description: INodeTypeDescription = {
         displayName: 'Cb Finish',
         name: 'cbFinish',
-        group: ['Chatbot Atendimento'],
+        group: ['transform'],
         version: 1,
         description: 'Finish',
 		credentials: [
