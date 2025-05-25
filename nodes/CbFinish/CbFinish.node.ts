@@ -8,11 +8,11 @@ import { NodeConnectionType } from 'n8n-workflow'
 import { RedisService } from '../TelegramChatNode/redis.util'
 import { flushInput } from '../CbMsgFlushNode/flush_utill';
 
-export class CbFinishNode implements INodeType {
+export class CbFinish implements INodeType {
     description: INodeTypeDescription = {
         displayName: 'Cb Finish',
         name: 'cbFinish',
-        group: ['transform'],
+        group: ['Chatbot Atendimento'],
         version: 1,
         description: 'Finish',
 		credentials: [
