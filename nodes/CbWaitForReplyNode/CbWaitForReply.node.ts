@@ -6,6 +6,7 @@ import type {
 } from 'n8n-workflow';
 import { NodeConnectionType } from 'n8n-workflow';
 import { RedisService } from '../TelegramChatNode/redis.util';
+import { waitForReply } from '../CbMsgFlushNode/flush_utill';
 
 export class CbWaitForReply implements INodeType {
     description: INodeTypeDescription = {
@@ -51,37 +52,32 @@ export class CbWaitForReply implements INodeType {
         this.logger.error("----------------------------------------------------------------------")
         this.logger.error("CbWaitForReply ON START " + JSON.stringify(inData))
         this.logger.error("CbWaitForReply ON WAIT " + JSON.stringify(waitData)) 
-        const workflowId = this.getWorkflow().id
-        const credentials = await this.getCredentials('redis')
-        const redisService = new RedisService(credentials)
-        redisService.connect()
+
         if (inData.length == 1) {
-            await redisService.updateChatDataByWorkflowId(workflowId, (data: any) => {
-                const callbackUrl = this.evaluateExpression('{{ $execution?.resumeUrl }}', 0) as string
-                data.resumeUrl = callbackUrl
-                this.logger.error("UPDATING REDIS WORKFLOW WITH callbackUrl : " + callbackUrl )
-                return data
-            })
+            await waitForReply(this)
             onWait = [{
                 json: inData[0].json,
             }]
         }
 
         if (waitData.length == 1) {
-            this.logger.warn("CbWaitForReply ONWAIT PROCESSANDO " + JSON.stringify(waitData) + " ***********************" )
+            const workflowId = this.getWorkflow().id
+            const credentials = await this.getCredentials('redis')
+            const redisService = new RedisService(credentials)
+            redisService.connect()
+                this.logger.warn("CbWaitForReply ONWAIT PROCESSANDO " + JSON.stringify(waitData) + " ***********************" )
             await redisService.updateChatDataByWorkflowId(workflowId, (data: any) => {
                 data.resumeUrl = null
                 this.logger.error("CbWaitForReply ONWAIT CALLED " + JSON.stringify(data) + " ***********************" )
                 data.resumeMessage = null
                 return data
             })
+            await redisService.disconnect()
             const body = waitData[0].json.body as any
             onOut = [{
                 json: {chatInput:body.texto, tipoMensagem : body.tipoMensagem }
             }]
         }
-
-        await redisService.disconnect()
 
         return [
             this.helpers.returnJsonArray(onOut),

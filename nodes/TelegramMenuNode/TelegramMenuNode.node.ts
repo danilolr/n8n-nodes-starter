@@ -150,7 +150,7 @@ export class TelegramMenuNode implements INodeType {
 						"ok": false,
 						"response": "Opção inválida"
 					}
-				}];
+				}]
 			}
 		} else {
 			onStart = [{
@@ -158,12 +158,12 @@ export class TelegramMenuNode implements INodeType {
 					"ok": true,
 					"response": textoStart
 				}
-			}];
+			}]
 		}
 		return [
 			this.helpers.returnJsonArray(onStart),
 			this.helpers.returnJsonArray(onNone),
 			...onOptions,
-		];
+		]
 	}
 }

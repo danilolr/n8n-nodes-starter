@@ -1,14 +1,12 @@
-/// <reference lib="dom" />
-
 import type {
     IExecuteFunctions,
     INodeExecutionData,
-    INodeType,
     INodeTypeDescription,
-} from 'n8n-workflow';
-import { NodeConnectionType } from 'n8n-workflow';
+} from 'n8n-workflow'
+import { Node } from 'n8n-workflow'
+import { NodeConnectionType } from 'n8n-workflow'
 
-export class TelegramWaitMessageNode implements INodeType {
+export class TelegramWaitMessageNode extends Node {
 
     description: INodeTypeDescription = {
         displayName: 'Telegram Wait Message',
@@ -19,26 +17,12 @@ export class TelegramWaitMessageNode implements INodeType {
         defaults: {
             name: 'Wait Message',
         },
-        credentials: [
-            {
-                name: 'redis',
-                required: true,
-            },
-        ],
 		inputs: [{
 			type: NodeConnectionType.Main
-		},{
-			type: NodeConnectionType.Main,
-			displayName: 'callbackStart',
-		}, ],
+		} ],
         outputs: [
             {
                 type: NodeConnectionType.Main,
-                displayName: 'onMessage',
-            },
-            {
-                type: NodeConnectionType.Main,
-                displayName: 'onStart',
             },
         ],
         properties: [
@@ -46,6 +30,8 @@ export class TelegramWaitMessageNode implements INodeType {
     };
 
     async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
-        return [this.getInputData(0)];
+        const WAIT_INDEFINITELY = new Date('3000-01-01T00:00:00.000Z');
+		await this.putExecutionToWait(WAIT_INDEFINITELY);
+		return [this.getInputData()];
     }
 }

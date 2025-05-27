@@ -5,8 +5,7 @@ import type {
     INodeTypeDescription,
 } from 'n8n-workflow'
 import { NodeConnectionType } from 'n8n-workflow'
-import { RedisService } from '../TelegramChatNode/redis.util'
-import { flushInput } from '../CbMsgFlushNode/flush_utill';
+import { addTextMessage, flushInput } from '../CbMsgFlushNode/flush_utill'
 
 export class CbMsgAddNode implements INodeType {
     description: INodeTypeDescription = {
@@ -49,24 +48,9 @@ export class CbMsgAddNode implements INodeType {
         const message = this.getNodeParameter('message', 0, '') as string
         const imediate = this.getNodeParameter('imediate', 0, '') as boolean
         
-		const workflowId = this.getWorkflow().id
+        this.logger.warn("CbMsgAddNode execute message :" + message + " imediate :" + imediate)
 
-        this.logger.warn("CbMsgAddNode execute message :" + message + " workflowId :" + workflowId + " imediate :" + imediate)
-        const credentials = await this.getCredentials('redis')
-        const redisService = new RedisService(credentials)
-        redisService.connect()
-
-        await redisService.updateChatDataByWorkflowId(workflowId, (data: any) => {
-            // this.logger.warn("CbMsgAddNode received redisData :" + message)
-            data.pendingMessages.push({
-                tipo: "TEXTO",
-                texto: message,
-            })
-            // this.logger.warn("CbMsgAddNode received OUT redisData :" + data)
-            return data
-        })
-
-        await redisService.disconnect()
+        await addTextMessage(this, message)
 
         if (imediate) {
             await flushInput(this)

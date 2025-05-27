@@ -38,7 +38,7 @@ export class AtendimentoNode implements INodeType {
 		version: 1,
 		description: 'Atendimento Node',
 		defaults: {
-			name: 'Atendimento Node',
+			name: 'Atendimento',
 		},
 		credentials: [
 			{
