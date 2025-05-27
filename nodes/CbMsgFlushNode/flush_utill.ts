@@ -9,7 +9,6 @@ export async function flushInput(self: IExecuteFunctions) {
     redisService.connect()
 
     await redisService.updateChatDataByWorkflowId(workflowId, async (data: any) => {
-        self.logger.warn("CbMsgFlushNode received IN redisData :" + JSON.stringify(data))
         const urlCallback = data.ids.urlCallback
         const params = {
             "uuid": data.ids.uuid,
@@ -18,6 +17,10 @@ export async function flushInput(self: IExecuteFunctions) {
                 "messages": data.pendingMessages,
             }
         }
+        self.logger.warn("**********************************************************")
+        self.logger.warn("FLUSHING DATA :" + JSON.stringify(data))
+        self.logger.warn("FLUSHING PARAMS :" + JSON.stringify(params))
+        self.logger.warn("FLUSHING TO URL :" + JSON.stringify(urlCallback))
 
         self.logger.warn("CbMsgFlushNode urlCallback :" + urlCallback)
         self.logger.warn("CbMsgFlushNode params :" + JSON.stringify(params))

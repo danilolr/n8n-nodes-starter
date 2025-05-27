@@ -38,34 +38,28 @@ export class CbWaitForReply implements INodeType {
             displayName: 'wait',
         }],
         properties: [
-            {
-                displayName: 'Callback URL',
-                name: 'callbackUrl',
-                type: 'string',
-                default: '{{ $execution.resumeUrl }}',
-                placeholder: 'Callback URL',
-                description: 'Callback URL to be called when the bot is ready to send a message',
-            }
         ],
     };
 
-    async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+    async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {        
         const inData = this.getInputData(0)
         const waitData = this.getInputData(1)
 
         var onOut: INodeExecutionData[] = []
         var onWait: INodeExecutionData[] = []
 
-        this.logger.error("CbWaitForReply execute0 " + JSON.stringify(inData) + " " + JSON.stringify(inData.length))
-        this.logger.error("CbWaitForReply execute1 " + JSON.stringify(waitData) + " " + JSON.stringify(inData.length))
+        this.logger.error("----------------------------------------------------------------------")
+        this.logger.error("CbWaitForReply ON START " + JSON.stringify(inData))
+        this.logger.error("CbWaitForReply ON WAIT " + JSON.stringify(waitData)) 
         const workflowId = this.getWorkflow().id
         const credentials = await this.getCredentials('redis')
         const redisService = new RedisService(credentials)
         redisService.connect()
         if (inData.length == 1) {
             await redisService.updateChatDataByWorkflowId(workflowId, (data: any) => {
-                const callbackUrl = this.getNodeParameter('callbackUrl', 0, '') as string
+                const callbackUrl = this.evaluateExpression('{{ $execution?.resumeUrl }}', 0) as string
                 data.resumeUrl = callbackUrl
+                this.logger.error("UPDATING REDIS WORKFLOW WITH callbackUrl : " + callbackUrl )
                 return data
             })
             onWait = [{
@@ -74,16 +68,16 @@ export class CbWaitForReply implements INodeType {
         }
 
         if (waitData.length == 1) {
-            var resp = null
+            this.logger.warn("CbWaitForReply ONWAIT PROCESSANDO " + JSON.stringify(waitData) + " ***********************" )
             await redisService.updateChatDataByWorkflowId(workflowId, (data: any) => {
                 data.resumeUrl = null
                 this.logger.error("CbWaitForReply ONWAIT CALLED " + JSON.stringify(data) + " ***********************" )
-                resp = data.resumeMessage
                 data.resumeMessage = null
                 return data
             })
+            const body = waitData[0].json.body as any
             onOut = [{
-                json: {chatInput:resp},
+                json: {chatInput:body.texto, tipoMensagem : body.tipoMensagem }
             }]
         }
 

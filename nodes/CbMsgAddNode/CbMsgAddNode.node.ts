@@ -51,19 +51,18 @@ export class CbMsgAddNode implements INodeType {
         
 		const workflowId = this.getWorkflow().id
 
-        this.logger.warn("CbMsgAddNode execute message :" + message)
-        this.logger.warn("CbMsgAddNode execute workflowId :" + workflowId)        
+        this.logger.warn("CbMsgAddNode execute message :" + message + " workflowId :" + workflowId + " imediate :" + imediate)
         const credentials = await this.getCredentials('redis')
         const redisService = new RedisService(credentials)
         redisService.connect()
 
         await redisService.updateChatDataByWorkflowId(workflowId, (data: any) => {
-            this.logger.warn("CbMsgAddNode received redisData :" + message)
+            // this.logger.warn("CbMsgAddNode received redisData :" + message)
             data.pendingMessages.push({
                 tipo: "TEXTO",
                 texto: message,
             })
-            this.logger.warn("CbMsgAddNode received OUT redisData :" + data)
+            // this.logger.warn("CbMsgAddNode received OUT redisData :" + data)
             return data
         })
 

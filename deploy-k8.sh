@@ -2,7 +2,8 @@
 
 # --- Configurações ---
 # Namespace onde o pod está localizado
-NAMESPACE="n8n-prd"
+NAMESPACE="n8n-home"
+# NAMESPACE="n8n-prd"
 # Prefixo do nome do pod (ex: "n8n-", o script encontrará o nome completo)
 NOME_PREFIXO_POD="n8n-"
 # Nome do arquivo local a ser copiado

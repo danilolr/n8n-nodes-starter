@@ -35,12 +35,12 @@ export class RedisService {
     async updateChatDataByUuid(uuid: string, cb: (data: any) => any) {
         const key = 'chat_' + uuid
 		var value = await this.getValue(key) 
-        console.error("Workflow VALUE **********************", value)
+        // console.error("Workflow VALUE **********************", value)
         if (value != null) {
             value = JSON.parse(value)
         }        
         var newValue = await cb(value)
-        console.error("Workflow NEW VALUE **********************", newValue)
+        // console.error("Workflow NEW VALUE **********************", newValue)
         await this.setValue(key, JSON.stringify(newValue))
 	}
 
@@ -50,9 +50,9 @@ export class RedisService {
             return
         }
         const key = 'workflow_' + workflowId
-        console.error("Workflow KEY **********************", key)
+        // console.error("Workflow KEY **********************", key)
 		var uuid = await this.getValue(key) as string
-        console.error("Workflow UUID **********************", uuid)
+        // console.error("Workflow UUID **********************", uuid)
         await this.updateChatDataByUuid(uuid, cb)
 	}
 
