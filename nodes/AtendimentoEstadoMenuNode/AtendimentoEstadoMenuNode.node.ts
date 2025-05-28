@@ -146,12 +146,13 @@ export class AtendimentoEstadoMenuNode implements INodeType {
 			var p = 0
 			var valida = false
 			menuConfig.estado.forEach((estadoEntry: { key: string; texto: string; outputName: string }) => {
+				onOptions.push([])
 				this.logger.error("ESTADO :" + JSON.stringify(estadoEntry))
 				if (estadoEntry.key == resposta) {
 					onOptions[p] = [{
 						json: {
 							"ok": true,
-							// "response": estadoEntry.texto
+							"response": estadoEntry.texto
 						}
 					}];
 					valida = true
@@ -191,7 +192,7 @@ export class AtendimentoEstadoMenuNode implements INodeType {
 		} else {
 			this.logger.warn("AtendimentoEstadoMenuNode execute inputStart is empty")
 		}
-
+        this.logger.error("FINALIZADA EXECUCAO AtendimentoEstadoMenuNode " + onWait.length + " " + onOptions.length + " " + onNone.length)
 		return [
 			this.helpers.returnJsonArray(onWait),
 			...onOptions,
