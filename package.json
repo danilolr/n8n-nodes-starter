@@ -53,7 +53,12 @@
       "dist/nodes/CbMsgFlushNode/CbMsgFlushNode.node.js",
       "dist/nodes/CbFinish/CbFinish.node.js",
       "dist/nodes/CbTransfer/CbTransfer.node.js",
-      "dist/nodes/CbWaitForReply/CbWaitForReply.node.js"      
+      "dist/nodes/CbWaitForReply/CbWaitForReply.node.js",
+      "dist/nodes/CKitChatbot/CKitChatbot.node.js",
+      "dist/nodes/CKit/CKit.node.js",
+      "dist/nodes/CKitMsg/CKitMsg.node.js",
+      "dist/nodes/CKitMsgWait/CKitMsgWait.node.js",
+      "dist/nodes/CKitWait/CKitWait.node.js"
     ]
   },
   "devDependencies": {

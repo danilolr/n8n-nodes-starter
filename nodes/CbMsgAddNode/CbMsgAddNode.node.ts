@@ -5,7 +5,7 @@ import type {
     INodeTypeDescription,
 } from 'n8n-workflow'
 import { NodeConnectionType } from 'n8n-workflow'
-import { addTextMessage, flushInput } from '../CbMsgFlushNode/flush_utill'
+import { addTextMessage as addTextMessage2, flushInput as flushInput2 } from '../CbMsgFlushNode/flush_utill'
 
 export class CbMsgAddNode implements INodeType {
     description: INodeTypeDescription = {
@@ -50,10 +50,10 @@ export class CbMsgAddNode implements INodeType {
         
         this.logger.warn("CbMsgAddNode execute message :" + message + " imediate :" + imediate)
 
-        await addTextMessage(this, message)
+        await addTextMessage2(this, message)
 
         if (imediate) {
-            await flushInput(this)
+            await flushInput2(this)
         }
 
         return [this.getInputData(0)]
